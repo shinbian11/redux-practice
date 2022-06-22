@@ -2,6 +2,8 @@ import "./App.css";
 import { useSelector, useDispatch } from "react-redux";
 import countUp, { up } from "./countUpSlice";
 import countDown, { down } from "./countDownSlice";
+import { useEffect } from "react";
+
 function Left1(props) {
   return (
     <div>
@@ -20,7 +22,7 @@ function Left2(props) {
 }
 function Left3(props) {
   const dispatch = useDispatch();
-
+  const countUpValue = useSelector((state) => state.countUp.value);
   // action creator
   // function up(step) {
   //   return { type: "countUp/up", payload: step };
@@ -29,7 +31,7 @@ function Left3(props) {
   return (
     <div>
       <h1>Left3</h1>
-      <button
+      {/* <button
         onClick={() => {
           // dispatch({ type: "UP", step: 3 });
 
@@ -45,7 +47,24 @@ function Left3(props) {
         }}
       >
         +
+      </button> */}
+
+      <button
+        onClick={async () => {
+          const resp = await fetch("http://localhost:3333/countUp", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ value: countUpValue + 1 }), // db.json 과 위 fetch url 에 value 값을 1 증가시킨 결과를 적용하기!
+          });
+          const result = await resp.json();
+          dispatch(countUp.actions.up(1)); // 실제 화면에도 1 증가된 결과를 보여주기
+        }}
+      >
+        +
       </button>
+
       <button
         onClick={() => {
           // dispatch(countDown.actions.down(3));
@@ -100,7 +119,17 @@ function Right3(props) {
     </div>
   );
 }
+
 export default function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    (async () => {
+      const resp = await fetch("http://localhost:3333/countUp");
+      const result = await resp.json();
+      dispatch(countUp.actions.set(result.value));
+    })();
+  }, []);
+
   return (
     <div id="app">
       <h1>Root</h1>

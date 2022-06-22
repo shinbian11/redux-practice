@@ -11,6 +11,9 @@ const slice = createSlice({
       // 내부적으로 immerjs 를 통해서 자동적으로 처리해준다
       state.value = state.value + action.payload;
     },
+    set: (state, action) => {
+      state.value = action.payload;
+    },
   },
 });
 export default slice;
