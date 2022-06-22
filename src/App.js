@@ -1,5 +1,7 @@
 import "./App.css";
 import { useSelector, useDispatch } from "react-redux";
+import countUp, { up } from "./countUpSlice";
+import countDown, { down } from "./countDownSlice";
 function Left1(props) {
   return (
     <div>
@@ -18,15 +20,39 @@ function Left2(props) {
 }
 function Left3(props) {
   const dispatch = useDispatch();
+
+  // action creator
+  // function up(step) {
+  //   return { type: "countUp/up", payload: step };
+  // }
+
   return (
     <div>
       <h1>Left3</h1>
       <button
         onClick={() => {
-          dispatch({ type: "UP", step: 3 });
+          // dispatch({ type: "UP", step: 3 });
+
+          // payload : 내용물
+          // dispatch(up(2));
+
+          // // 이 countUp은 countUpSlice.js에서 countUp이라는 name으로 줬기 때문
+          // // countUp.actions.up(2) 는 { type: "countUp/up", payload: 2 }을 리턴한다 (저 객체를 자동으로 만들어줌, 하나의 문법 규칙)
+          // // 호출하는 방법을 조금 더 번거롭지 않게끔 Redux측에서 하나의 문법화를 시킨것이다!
+
+          // dispatch(countUp.actions.up(2)); // 밑 줄처럼 할 수도 있다.
+          dispatch(up(2)); // up 함수 자체를 import 받아서 이렇게 할 수도 있다.
         }}
       >
         +
+      </button>
+      <button
+        onClick={() => {
+          // dispatch(countDown.actions.down(3));
+          dispatch(down(3)); // down 함수 자체를 import 받아서 할 수도 있다.
+        }}
+      >
+        -
       </button>
     </div>
   );
@@ -59,13 +85,18 @@ function Right3(props) {
 
   // - 이 방법을 사용하면, useReducer의 코드들은 모두 필요 없어진다!
   // - store의 특정 데이터를 하위 컴포넌트에서 가져다가 쓰려면 useSelector를 이용하면 된다. (store에 있는 데이터들 중에서 가져다가 쓸 데이터를 select 한다!)
-  const value = useSelector((state) => {
-    return state.value;
+  const countUpValue = useSelector((state) => {
+    return state.countUp.value;
   });
+
+  const countDownValue = useSelector((state) => {
+    return state.countDown.value;
+  });
+
   return (
     <div>
       <h1>Right3</h1>
-      {value}
+      {countUpValue} | {countDownValue}
     </div>
   );
 }
